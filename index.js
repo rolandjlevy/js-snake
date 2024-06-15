@@ -45,10 +45,10 @@ const keysMap = new Map([
 
 window.addEventListener('keydown', (e) => {
   const inc = keysMap.get(e.key) || 0;
-  // if ((currentItemNum + inc) % size !== 0) {
+  if (currentItemNum % size > 1) {
     handleGridItemState(currentItemNum, 'remove');
     currentItemNum += inc;
     handleGridItemState(currentItemNum, 'add');
-  // }
-  console.log((currentItemNum + inc) % size);
+  }
+  console.log(currentItemNum % size);
 });
