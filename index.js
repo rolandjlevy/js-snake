@@ -5,7 +5,11 @@ const createElem = (tagName, props = {}) => {
   return Object.assign(el, props);
 };
 
-const size = 7;
+// const queryString = window.location.search;
+// const urlParams = new URLSearchParams(queryString);
+
+const defaultSize = 10;
+const size = defaultSize; // urlParams.get('gridSize') || defaultSize;
 
 const matrix = Array(size * size).fill({});
 
@@ -27,3 +31,7 @@ const getRandomNum = (max) => Math.floor(Math.random() * max) + 1;
 const randItemNum = getRandomNum(size * size);
 
 $(`#item_${randItemNum}`).classList.add('active');
+
+window.addEventListener('keydown', (e) => {
+  console.log(e.key);
+});

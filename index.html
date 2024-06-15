@@ -2,44 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Snake</title>
-  <style>
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .grid-container {
-      display: grid;
-      gap: 5px;
-    }
-
-    .grid-item {
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      background-color: #eee;
-      border: 1px solid #ccc;
-      padding: 3px;
-      width: 25px;
-      aspect-ratio: 1 / 1;
-      font-family: courier;
-      font-size: 12px;
-    }
-
-    .active {
-      background-color: #009966;
-      color: white;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
 </head>
 <body>
   <main class="container">
     <div class="grid-container"></div>
   </main>
-  <script src="./index.js"></script>
+  <script src="./index.js" defer></script>
 </body>
 </html>
