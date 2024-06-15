@@ -8,7 +8,7 @@ const createElem = (tagName, props = {}) => {
 // const queryString = window.location.search;
 // const urlParams = new URLSearchParams(queryString);
 
-const defaultSize = 10;
+const defaultSize = 5;
 const size = defaultSize; // urlParams.get('gridSize') || defaultSize;
 
 const matrix = Array(size * size).fill({});
@@ -28,10 +28,27 @@ matrix.forEach((item, index) => {
 
 const getRandomNum = (max) => Math.floor(Math.random() * max) + 1;
 
-const randItemNum = getRandomNum(size * size);
+const handleGridItemState = (n, action) => {
+  $(`#item_${n}`).classList[action]('active');
+}
 
-$(`#item_${randItemNum}`).classList.add('active');
+let currentItemNum = getRandomNum(size * size);
+
+handleGridItemState(currentItemNum, 'add');
+
+const keysMap = new Map([
+  ["w", -size],
+  ["s", size],
+  ["a", -1],
+  ["d", 1]
+]);
 
 window.addEventListener('keydown', (e) => {
-  console.log(e.key);
+  const inc = keysMap.get(e.key) || 0;
+  // if ((currentItemNum + inc) % size !== 0) {
+    handleGridItemState(currentItemNum, 'remove');
+    currentItemNum += inc;
+    handleGridItemState(currentItemNum, 'add');
+  // }
+  console.log((currentItemNum + inc) % size);
 });
