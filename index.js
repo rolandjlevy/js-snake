@@ -5,19 +5,21 @@ const createElem = (tagName, props = {}) => {
   return Object.assign(el, props);
 };
 
+const getRandomNum = (max) => Math.floor(Math.random() * max) + 1;
+
 // const queryString = window.location.search;
 // const urlParams = new URLSearchParams(queryString);
 
-const defaultSize = 5;
+const defaultSize = 10;
 const size = defaultSize; // urlParams.get('gridSize') || defaultSize;
 const maxSize = size * size;
-
-const matrix = Array(maxSize).fill({});
 
 $('.grid-container').style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 $('.grid-container').style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
-matrix.forEach((_, index) => {
+const grid = Array(maxSize).fill({});
+
+grid.forEach((_, index) => {
   const gridItemProps = { 
     className: 'grid-item', 
     textContent: index + 1, 
@@ -27,29 +29,40 @@ matrix.forEach((_, index) => {
   $('.grid-container').appendChild(gridItem);
 });
 
-const getRandomNum = (max) => Math.floor(Math.random() * max) + 1;
-
-const handleGridItemState = (n, action) => {
+const updateItemState = (n, action) => {
   $(`#item_${n}`).classList[action]('active');
 }
 
 let currentPos = getRandomNum(maxSize);
+updateItemState(currentPos, 'add');
 
-handleGridItemState(currentPos, 'add');
+const keyMappings = { w:'up', s:'down', a:'left', d:'right' };
+const keysArray = Object.keys(keyMappings);
+const randomIndex = Math.floor(Math.random() * keysArray.length);
+let currentKey = keysArray[randomIndex];
 
-const getNextPos = (key, currentPos) => {
+console.log({ currentKey });
+
+const getNextPos = (pos) => {
   const mappings = {
-    a: currentPos % size === 1 ? currentPos + size - 1 : currentPos - 1,
-    d: currentPos % size === 0 ? currentPos - size + 1 : currentPos + 1,
-    w: currentPos <= size ? currentPos + (maxSize) - size : currentPos - size,
-    s: currentPos > (maxSize) - size ? currentPos - (maxSize) + size : currentPos + size
+    up: pos <= size ? pos + (maxSize) - size : pos - size,
+    down: pos > (maxSize) - size ? pos - (maxSize) + size : pos + size,
+    left: pos % size === 1 ? pos + size - 1 : pos - 1,
+    right: pos % size === 0 ? pos - size + 1 : pos + 1,
   }
-  return mappings?.[key] || currentPos;
-}
+  const dir = keyMappings[currentKey];
+  return mappings[dir] || pos;
+};
 
 window.addEventListener('keydown', (e) => {
-  const nextPos = getNextPos(e.key, currentPos);
-  handleGridItemState(currentPos, 'remove');
-  currentPos = nextPos;
-  handleGridItemState(currentPos, 'add');
+  currentKey = keyMappings?.[e.key] ? e.key : currentKey;
 });
+
+setInterval(() => {
+  const nextPos = getNextPos(currentPos);
+  updateItemState(currentPos, 'remove');
+  currentPos = nextPos;
+  updateItemState(currentPos, 'add');
+}, 1000);
+
+// $('.display').textContent = keys[randomItem];
