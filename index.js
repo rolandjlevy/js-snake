@@ -10,13 +10,14 @@ const createElem = (tagName, props = {}) => {
 
 const defaultSize = 5;
 const size = defaultSize; // urlParams.get('gridSize') || defaultSize;
+const maxSize = size * size;
 
-const matrix = Array(size * size).fill({});
+const matrix = Array(maxSize).fill({});
 
 $('.grid-container').style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 $('.grid-container').style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
-matrix.forEach((item, index) => {
+matrix.forEach((_, index) => {
   const gridItemProps = { 
     className: 'grid-item', 
     textContent: index + 1, 
@@ -32,23 +33,23 @@ const handleGridItemState = (n, action) => {
   $(`#item_${n}`).classList[action]('active');
 }
 
-let currentItemNum = getRandomNum(size * size);
+let currentPos = getRandomNum(maxSize);
 
-handleGridItemState(currentItemNum, 'add');
+handleGridItemState(currentPos, 'add');
 
-const keysMap = new Map([
-  ["w", -size],
-  ["s", size],
-  ["a", -1],
-  ["d", 1]
-]);
+const getNextPos = (key, currentPos) => {
+  const mappings = {
+    a: currentPos % size === 1 ? currentPos + size - 1 : currentPos - 1,
+    d: currentPos % size === 0 ? currentPos - size + 1 : currentPos + 1,
+    w: currentPos <= size ? currentPos + (maxSize) - size : currentPos - size,
+    s: currentPos > (maxSize) - size ? currentPos - (maxSize) + size : currentPos + size
+  }
+  return mappings?.[key] || currentPos;
+}
 
 window.addEventListener('keydown', (e) => {
-  const inc = keysMap.get(e.key) || 0;
-  // if ((currentItemNum + inc) % size !== 0) {
-    handleGridItemState(currentItemNum, 'remove');
-    currentItemNum += inc;
-    handleGridItemState(currentItemNum, 'add');
-  // }
-  console.log((currentItemNum + inc) % size);
+  const nextPos = getNextPos(e.key, currentPos);
+  handleGridItemState(currentPos, 'remove');
+  currentPos = nextPos;
+  handleGridItemState(currentPos, 'add');
 });
