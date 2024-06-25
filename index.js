@@ -9,9 +9,10 @@ const getRandomNum = (max) => Math.floor(Math.random() * max) + 1;
 
 // const queryString = window.location.search;
 // const urlParams = new URLSearchParams(queryString);
+// const size = urlParams.get('gridSize') || defaultSize;
 
 const defaultSize = 10;
-const size = defaultSize; // urlParams.get('gridSize') || defaultSize;
+const size = defaultSize;
 const maxSize = size * size;
 
 $('.grid-container').style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -20,12 +21,17 @@ $('.grid-container').style.gridTemplateRows = `repeat(${size}, 1fr)`;
 const grid = Array(maxSize).fill({});
 
 grid.forEach((_, index) => {
-  const gridItemProps = { 
-    className: 'grid-item', 
-    textContent: index + 1, 
-    id: `item_${index + 1}` 
+  const x = index % size + 1;
+  const y = Math.floor(index / size) + 1;
+  const gridItemProps = {
+    className: 'grid-item',
+    textContent: `${x},${y}`,
+    id: `item_${index + 1}`
   };
   const gridItem = createElem('div', gridItemProps);
+  gridItem.setAttribute('data-x', x);
+  gridItem.setAttribute('data-y', y);
+
   $('.grid-container').appendChild(gridItem);
 });
 
@@ -36,12 +42,10 @@ const updateItemState = (n, action) => {
 let currentPos = getRandomNum(maxSize);
 updateItemState(currentPos, 'add');
 
-const keyMappings = { w:'up', s:'down', a:'left', d:'right' };
+const keyMappings = { w: 'up', s: 'down', a: 'left', d: 'right' };
 const keysArray = Object.keys(keyMappings);
 const randomIndex = Math.floor(Math.random() * keysArray.length);
 let currentKey = keysArray[randomIndex];
-
-console.log({ currentKey });
 
 const getNextPos = (pos) => {
   const mappings = {
